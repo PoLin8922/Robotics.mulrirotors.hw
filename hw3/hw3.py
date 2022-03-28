@@ -106,16 +106,13 @@ def quad_sim():
             print("axis=", V)
 
             # get the rotation angle of the rotation axis
-            angle_of_axis = acos( float(trace(rel_R)-1)/2 )
+            angle_of_axis = acos( (trace(rel_R)-1)/2 )
             print("angle=", angle_of_axis)
 
             # get the rotation error
-            #norm_axis = sqrt(axis[0]*axis[0] + axis[1]*axis[1] + axis[2]*axis[2])
-            #print(" norm_axis=",norm_axis)
-            rotation_error = float(angle_of_axis)*V/np.linalg.norm(V)
+            rotation_error = angle_of_axis*(V/normalize(V))
             print("rotation_error=",rotation_error)
-                        
-            rotation_error = np.array([[0],[0] ,[0]])
+
             
             desire_w = np.array([des_roll_rate,des_pitch_rate,des_yaw_rate]).reshape(3,1)
             ew = angular_vel - (q.R.T @ des_R) @ desire_w
@@ -273,6 +270,14 @@ def trace(R):
 def add_noise(x,value):
     x_noise = np.random.normal(0, value,x.shape)
     return x + x_noise
+
+def normalize(v):
+    norm = np.linalg.norm(v)
+    if norm == 0:
+        v = 1
+        return v
+    else:
+        return v/norm 
 
 def main():
 
